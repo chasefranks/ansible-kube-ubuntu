@@ -1,0 +1,34 @@
+---
+  - hosts: kube-master
+    remote_user: chase
+    vars:
+      pod_network_subnet: 10.244.0.0/16
+      join_token: # use kubeadm token generate
+    become: yes
+
+    tasks:
+      - name: make sure ufw is installed
+        apt:
+          name: ufw
+          state: installed
+
+      - name: open port for flannel
+        ufw:
+          rule: allow
+          port: 8285
+          proto: udp
+
+      - name: kubeadm init
+        command: kubeadm init --token {{join_token}} --pod-network-cidr {{pod_network_subnet}} creates="/etc/kubernetes/admin.conf"
+
+      - name: allow pods to be scheduled on this master
+        command: kubectl taint nodes --all dedicated-
+        ignore_errors: true
+
+      - name: fetch flannel pod network add-on
+        get_url:
+          url: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+          dest: /tmp/kube-flannel.yml
+
+      - name: apply flannel
+        command: kubectl apply -f /tmp/kube-flannel.yml

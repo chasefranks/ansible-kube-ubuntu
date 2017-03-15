@@ -1,0 +1,9 @@
+---
+  - hosts: kube-master
+    remote_user: chase
+    become: yes
+
+    tasks:
+      -name
+      - name: deploy Kubernetes dashboard
+        command: kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml

@@ -1,0 +1,22 @@
+---
+  - hosts: kube-nodes
+    remote_user: chase
+    vars:
+      master_ip: 192.168.1.20
+      join_token: # use kubeadm token generate
+    become: yes
+
+    tasks:
+      - name: make sure ufw is installed
+        apt:
+          name: ufw
+          state: installed
+
+      - name: open port for flannel
+        ufw:
+          rule: allow
+          port: 8285
+          proto: udp
+
+      - name: join
+        command: kubeadm join --token {{join_token}} {{master_ip}} --skip-preflight-checks creates="/etc/kubernetes/kubelet.conf"
