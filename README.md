@@ -1,6 +1,6 @@
 # Ansible Playbooks to Install Kubernetes on Ubuntu
 
-A collection of Ansible playbooks to setup and initialize a Kubernetes cluster on Ubuntu 16.04 LTS.
+A collection of Ansible playbooks to setup and initialize a Kubernetes cluster on Ubuntu 16.04 LTS. We basically take the instructions from [Installing Kubernetes on Linux with kubeadm](https://kubernetes.io/docs/getting-started-guides/kubeadm/) and make them available as playbooks.
 
 ## Quick Start
 

@@ -13,6 +13,9 @@
         name: apt-transport-https
         state: installed
 
+    - name: update certs
+      command: update-ca-certificates
+
     - name: add Kubernetes repo key
       apt_key:
         url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
