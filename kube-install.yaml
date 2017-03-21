@@ -1,9 +1,18 @@
 ---
 - hosts: kubes
-  remote_user: chase
+  remote_user: '{{user}}'
   become: yes
 
+  vars_files:
+    - vars.yaml
+
   tasks:
+    - name: template proxy config for apt
+      template:
+        src: templates/proxy.j2
+        dest: /etc/apt/apt.conf.d/proxy
+      when: proxy-present == "true"
+
     - name: update
       apt:
         update_cache: yes
@@ -19,6 +28,8 @@
     - name: add Kubernetes repo key
       apt_key:
         url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+        validate_certs: no
+      environment: "{{proxy_env}}"
 
     - name: add Kubernetes repo
       apt_repository:
@@ -30,6 +41,21 @@
         name: docker.io
         state: latest
 
+    - name: create systemd drop-in dir for docker
+      file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+      when: proxy-present == "true"
+
+    - name: add proxy settings to docker
+      template:
+        src: templates/http-proxy.j2
+        dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+      notify:
+        - systemctl-flush
+        - docker-restart
+      when: proxy-present == "true"
+
     - name: install Kubernetes
       apt: name={{ item }} state=latest
       with_items:
@@ -37,3 +63,10 @@
         - kubeadm
         - kubectl
         - kubernetes-cni
+
+  handlers:
+    - name: systemctl-flush
+      command: systemctl daemon-reload
+
+    - name: docker-restart
+      command: systemctl restart docker

@@ -41,3 +41,9 @@ or run the ansible-playbook commands above with the -i flag:
 ```
 ansible-playbook -i ./ansible_inventory playbook.yaml
 ```
+
+To test that ansible can reach your inventory over ssh, run
+
+```
+ansible kubes -m ping -u <remote_user>
+```
