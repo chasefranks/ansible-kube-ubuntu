@@ -1,0 +1,19 @@
+# specify remote user
+user: 
+
+# set true if behind a web proxy
+proxy-present: false
+
+# set http proxy environment here
+proxy_env:
+  http_proxy: proxy.example.com
+  https_proxy: proxy.example.com
+
+# flannel subnet
+pod_network_cidr: 10.244.0.0/16
+
+# specify hostname of kube master
+kube_master: kubemaster.example.com
+
+# use kubeadm token generate after running kube-install.yaml playbook
+join_token:
