@@ -11,7 +11,7 @@
       template:
         src: templates/proxy.j2
         dest: /etc/apt/apt.conf.d/proxy
-      when: proxy-present == "true"
+      when: proxy_present == true
 
     - name: update
       apt:
@@ -45,7 +45,7 @@
       file:
         path: /etc/systemd/system/docker.service.d
         state: directory
-      when: proxy-present == "true"
+      when: proxy_present == true
 
     - name: add proxy settings to docker
       template:
@@ -54,7 +54,16 @@
       notify:
         - systemctl-flush
         - docker-restart
-      when: proxy-present == "true"
+      when: proxy_present == true
+
+    - name: add insecure registry to docker if set
+      template:
+        src: templates/daemon.json.j2
+        dest: /etc/docker/daemon.json
+      when: insecure_docker_registry|default("") != ""
+      notify:
+        - systemctl-flush
+        - docker-restart
 
     - name: install Kubernetes
       apt: name={{ item }} state=latest

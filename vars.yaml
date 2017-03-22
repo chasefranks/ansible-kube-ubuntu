@@ -1,13 +1,16 @@
 # specify remote user
-user: 
+user:
 
 # set true if behind a web proxy
-proxy-present: false
+proxy_present: false
 
 # set http proxy environment here
 proxy_env:
   http_proxy: proxy.example.com
   https_proxy: proxy.example.com
+
+# insecure docker registry if needed
+insecure_docker_registry:
 
 # flannel subnet
 pod_network_cidr: 10.244.0.0/16
