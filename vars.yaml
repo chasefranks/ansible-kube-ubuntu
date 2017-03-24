@@ -15,8 +15,5 @@ insecure_docker_registry:
 # flannel subnet
 pod_network_cidr: 10.244.0.0/16
 
-# specify hostname of kube master
-kube_master: kubemaster.example.com
-
 # use kubeadm token generate after running kube-install.yaml playbook
 join_token:

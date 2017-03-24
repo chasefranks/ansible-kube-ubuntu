@@ -1,6 +1,9 @@
 ---
   - hosts: kube-nodes
     remote_user: '{{user}}'
+    vars:
+      kube_master_host: "{{ groups['kube-master'][0] }}"
+      kube_master_ip: "{{ hostvars[kube_master_host]['ansible_default_ipv4']['address']}}"
     vars_files:
       - vars.yaml
     become: yes
@@ -18,4 +21,4 @@
           proto: udp
 
       - name: join
-        command: kubeadm join --token {{join_token}} {{kube_master}} --skip-preflight-checks creates="/etc/kubernetes/kubelet.conf"
+        command: kubeadm join --token {{join_token}} {{kube_master_ip}} --skip-preflight-checks creates="/etc/kubernetes/kubelet.conf"
