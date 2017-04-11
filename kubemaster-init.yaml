@@ -26,11 +26,13 @@
           group: "{{user}}"
           owner: "{{user}}"
 
-      - name: download weave network add-on yaml
+      - name: wget weave network add-on yaml
         get_url:
           url: https://git.io/weave-kube-1.6
           dest: /tmp/weave-kube-1.6
-        environment: "{{proxy_env}}"
+        environment:
+          http_proxy: http://{{proxy_env.http_proxy}}
+          https_proxy: http://{{proxy_env.https_proxy}}
 
       - name: apply Weave Net network add on
         command: kubectl apply -f /tmp/weave-kube-1.6 --kubeconfig=/etc/kubernetes/admin.conf
