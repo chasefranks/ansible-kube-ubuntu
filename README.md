@@ -47,3 +47,12 @@ To test that ansible can reach your inventory over ssh, run
 ```
 ansible kubes -m ping -u <remote_user>
 ```
+
+## Exporting the kubeconfig file
+
+To enable remote access to your cluster via ```kubectl```, securely copy the config file from ~/.kube/config to your Ansible control machine
+
+```
+scp user@kubemaster:/home/user/.kube/config ./kubeconfig
+export KUBECONFIG=$(pwd)/kubeconfig
+```

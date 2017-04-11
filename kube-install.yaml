@@ -47,7 +47,7 @@
         state: directory
       when: proxy_present == true
 
-    - name: add proxy settings to docker
+    - name: add proxy settings to Docker
       template:
         src: templates/http-proxy.j2
         dest: /etc/systemd/system/docker.service.d/http-proxy.conf

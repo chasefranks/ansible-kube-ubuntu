@@ -6,16 +6,5 @@
     become: yes
 
     tasks:
-      - name: make sure ufw is installed
-        apt:
-          name: ufw
-          state: installed
-
-      - name: open port for flannel
-        ufw:
-          rule: allow
-          port: 8285
-          proto: udp
-
       - name: join
         command: kubeadm join --token {{join_token}} {{kube_master}}:{{kube_master_port}} --skip-preflight-checks creates="/etc/kubernetes/kubelet.conf"

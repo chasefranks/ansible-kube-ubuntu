@@ -6,21 +6,17 @@
     become: yes
 
     tasks:
-      - name: make sure ufw is installed
-        apt:
-          name: ufw
-          state: installed
-
-      - name: open port for flannel
-        ufw:
-          rule: allow
-          port: 8285
-          proto: udp
 
       - name: kubeadm init (this task may take a little while...)
-        command: kubeadm init --token {{join_token}} --pod-network-cidr {{pod_network_cidr}}
+        command: kubeadm init --token {{join_token}}
         args:
           creates: /etc/kubernetes/admin.conf
+
+      - name: create .kube directory
+        file:
+          path: /home/{{user}}/.kube
+          state: directory
+        become: no
 
       - name: copy kubeconfig to user home and set permissions
         copy:
@@ -30,11 +26,11 @@
           group: "{{user}}"
           owner: "{{user}}"
 
-      - name: template flannel pod network deployment
-        template:
-          src: templates/kube-flannel.yml.j2
-          dest: /tmp/kube-flannel.yml
+      - name: download weave network add-on yaml
+        get_url:
+          url: https://git.io/weave-kube-1.6
+          dest: /tmp/weave-kube-1.6
+        environment: "{{proxy_env}}"
 
-      - name: apply flannel
-        command: kubectl apply -f /tmp/kube-flannel.yml
-        become: no
+      - name: apply Weave Net network add on
+        command: kubectl apply -f /tmp/weave-kube-1.6 --kubeconfig=/etc/kubernetes/admin.conf

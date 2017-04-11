@@ -12,9 +12,6 @@ proxy_env:
 # insecure docker registry if needed
 insecure_docker_registry:
 
-# flannel subnet
-pod_network_cidr: 10.244.0.0/16
-
 # access to kube master for adding nodes to the cluster
 kube_master:
 kube_master_port: 6443
