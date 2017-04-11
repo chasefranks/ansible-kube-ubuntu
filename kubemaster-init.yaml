@@ -22,9 +22,13 @@
         args:
           creates: /etc/kubernetes/admin.conf
 
-      - name: allow pods to be scheduled on this master
-        command: kubectl taint nodes --all dedicated-
-        ignore_errors: true
+      - name: copy kubeconfig to user home and set permissions
+        copy:
+          remote_src: true
+          src: /etc/kubernetes/admin.conf
+          dest: /home/{{user}}/.kube/config
+          group: "{{user}}"
+          owner: "{{user}}"
 
       - name: template flannel pod network deployment
         template:
@@ -33,3 +37,4 @@
 
       - name: apply flannel
         command: kubectl apply -f /tmp/kube-flannel.yml
+        become: no
